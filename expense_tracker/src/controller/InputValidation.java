@@ -1,47 +1,34 @@
 package controller;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
-import java.util.Arrays;
+public final class InputValidation {
 
-public class InputValidation {
+    private static final Set<String> ALLOWED_CATEGORIES = Set.of("food", "travel", "bills", "entertainment", "other");
 
-  public static boolean isValidAmount(double amount) {
-    
-    // Check range
-    if(amount >1000) {
-      return false;
-    }
-    if (amount < 0){
-      return false;
-    }
-    if (amount == 0){
-      return false;
-    }
-    return true;
-  }
+    private InputValidation() {}
 
-  public static boolean isValidCategory(String category) {
-
-    if(category == null) {
-      return false; 
-    }
-  
-    if(category.trim().isEmpty()) {
-      return false;
+    // Validates the amount field
+    public static boolean isValidAmount(double amount) {
+        return amount > 0 && amount < 1000;
     }
 
-    if(!category.matches("[a-zA-Z]+")) {
-      return false;
+    // Validates the category field
+    public static boolean isValidCategory(String categoryString) {
+        String category = categoryString == null ? null : categoryString.trim().toLowerCase();
+        return category != null && category.matches("[a-zA-Z]+") && ALLOWED_CATEGORIES.contains(category);
     }
 
-    String[] validWords = {"food", "travel", "bills", "entertainment", "other"};
-
-    if(!Arrays.asList(validWords).contains(category.toLowerCase())) {
-      // invalid word  
-      return false;
+    // Validation method to check if both the fields passes the condition
+    public static List<String> validateAmountAndCategory(double amount, String category) {
+        List<String> errors = new ArrayList<>();
+        if (!isValidAmount(amount)) {
+            errors.add("Amount must be a number greater than 0 and less than 1000.");
+        }
+        if (!isValidCategory(category)) {
+            errors.add("Allowed categories are: food, travel, bills, entertainment, other.");
+        }
+        return errors;
     }
-  
-    return true;
-  
-  }
-
 }

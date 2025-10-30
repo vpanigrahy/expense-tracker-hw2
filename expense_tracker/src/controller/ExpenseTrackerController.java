@@ -1,13 +1,15 @@
 package controller;
 
-import view.ExpenseTrackerView;
-
+import filter.AmountFilter;
+import filter.CategoryFilter;
+import filter.TransactionFilter;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-
-
-
 import model.ExpenseTrackerModel;
 import model.Transaction;
+import view.ExpenseTrackerView;
+
 public class ExpenseTrackerController {
   
   private ExpenseTrackerModel model;
@@ -30,20 +32,63 @@ public class ExpenseTrackerController {
 
   }
 
-  public boolean addTransaction(double amount, String category) {
-    if (!InputValidation.isValidAmount(amount)) {
-      return false;
-    }
-    if (!InputValidation.isValidCategory(category)) {
-      return false;
-    }
+  public List<String> addTransaction(double amount, String category) {
+    List<String> validatedData = InputValidation.validateAmountAndCategory(amount, category);
+      if (!validatedData.isEmpty()) {
+        return validatedData;
+      }
     
     Transaction t = new Transaction(amount, category);
     model.addTransaction(t);
     view.getTableModel().addRow(new Object[]{t.getAmount(), t.getCategory(), t.getTimestamp()});
     refresh();
-    return true;
+    return Collections.emptyList();
   }
   
-  // Other controller methods
+  public List<String> applyFilter(String filterType, String filterValue) {
+    List<Transaction> allTransactions = model.getTransactions();
+
+    if (filterType == null || filterType.equalsIgnoreCase("none")) {
+      view.refreshTable(allTransactions);
+      return Collections.emptyList();
+    }
+
+    TransactionFilter strategy = null;
+
+    if (filterType.equalsIgnoreCase("amount")) {
+      double amountToFilter;
+      try {
+        amountToFilter = Double.parseDouble(filterValue);
+      } catch (NumberFormatException e) {
+        return Arrays.asList("Amount must be a valid number.");
+      }
+
+      if (!InputValidation.isValidAmount(amountToFilter)) {
+        return Arrays.asList("Amount must be a number greater than 0 and less than 1000.");
+      }
+
+      strategy = new AmountFilter(amountToFilter);
+
+    } else if (filterType.equalsIgnoreCase("category")) {
+      if (filterValue == null || filterValue.trim().isEmpty()) {
+        return Arrays.asList("Category cannot be empty.");
+      }
+
+      if (!InputValidation.isValidCategory(filterValue)) {
+        return Arrays.asList("Allowed categories are: food, travel, bills, entertainment, other.");
+      }
+
+      strategy = new CategoryFilter(filterValue.trim().toLowerCase());
+    }
+
+    if (strategy == null) {
+      view.refreshTable(allTransactions);
+      return Collections.emptyList();
+    }
+
+    List<Transaction> filtered = strategy.filter(allTransactions);
+    view.refreshTable(filtered);
+
+    return Collections.emptyList();
+  }
 }

@@ -1,11 +1,8 @@
-import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
-
 import controller.ExpenseTrackerController;
+import java.util.List;
+import javax.swing.JOptionPane;
 import model.ExpenseTrackerModel;
 import view.ExpenseTrackerView;
-import model.Transaction;
-import controller.InputValidation;
 
 public class ExpenseTrackerApp {
 
@@ -26,10 +23,25 @@ public class ExpenseTrackerApp {
       String category = view.getCategoryField();
       
       // Call controller to add transaction
-      boolean added = controller.addTransaction(amount, category);
+      List<String> errorStrings = controller.addTransaction(amount, category);
       
-      if (!added) {
-        JOptionPane.showMessageDialog(view, "Invalid amount or category entered");
+      if (!errorStrings.isEmpty()) {
+        String msg = "Please fix the following:\n- " + String.join("\n- ", errorStrings);
+        JOptionPane.showMessageDialog(view, msg, "Invalid input", JOptionPane.ERROR_MESSAGE);
+        view.toFront();
+      }
+    });
+
+    // Filter button handler
+    view.getApplyFilterBtn().addActionListener(e -> {
+      String filterType = view.getSelectedFilterType();
+      String filterValue = view.getFilterValue();
+
+      List<String> errors = controller.applyFilter(filterType, filterValue);
+
+      if (!errors.isEmpty()) {
+        String msg = "Please fix the following:\n- " + String.join("\n- ", errors);
+        JOptionPane.showMessageDialog(view, msg, "Invalid filter", JOptionPane.ERROR_MESSAGE);
         view.toFront();
       }
     });
