@@ -137,11 +137,15 @@ public class ExpenseTrackerView extends JFrame {
     this.categoryField = categoryField;
   }
 
-  // Filtering getters
+  /* Method to get applied filter button */
   public JButton getApplyFilterBtn() {
     return applyFilterBtn;
   }
 
+  /**
+ * @return the filter type selected in the UI:
+ *         "none", "amount", or "category".
+ */
   public String getSelectedFilterType() {
     String selected = (String) filterTypeCombo.getSelectedItem();
     if ("By amount".equals(selected)) {
@@ -152,6 +156,10 @@ public class ExpenseTrackerView extends JFrame {
     return "none";
   }
 
+  /**
+   *  To get the value used in filter
+   * @return the text value used to filter
+   * **/
   public String getFilterValue() {
     return filterValueField.getText();
   }

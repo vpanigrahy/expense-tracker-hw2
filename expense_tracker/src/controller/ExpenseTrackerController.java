@@ -45,6 +45,13 @@ public class ExpenseTrackerController {
     return Collections.emptyList();
   }
   
+  /**
+ * Applies a filter to the transactions currently in the model and updates the view.
+ *
+ * @param filterType  "none", "amount", or "category"
+ * @param filterValue user input for the filter (may be null/empty for "none")
+ * @return list of validation error messages; empty if filter was applied successfully
+ */
   public List<String> applyFilter(String filterType, String filterValue) {
     List<Transaction> allTransactions = model.getTransactions();
 

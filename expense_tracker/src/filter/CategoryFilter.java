@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import model.Transaction;
 
+/**
+ * Class for filtering transactions based on category.
+ * Implementations return a subset of the given list.
+ */
 public class CategoryFilter implements TransactionFilter {
 
     private final String category; // already trimmed + lowercased

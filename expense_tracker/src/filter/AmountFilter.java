@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import model.Transaction;
 
+/**
+ * Class for filtering transactions based on amount.
+ * Implementations return a subset of the given list.
+ */
 public class AmountFilter implements TransactionFilter {
 
     private final double amount;
