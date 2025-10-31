@@ -1,0 +1,73 @@
+commit fe57412e8573e982157262915c43320281e8f79f
+Author: vpanigrahy <vpanigrahy@umass.edu>
+Date:   Fri Oct 31 16:20:46 2025 -0400
+
+    Added plan for export to csv
+
+commit 02405eec13677826e3131b82d3f4f65480e9f663
+Author: Sahana Shetty <sahanashetty0910@gmail.com>
+Date:   Thu Oct 30 00:51:50 2025 -0400
+
+    Added API comments and updated README file
+
+commit 94d15c646c9e5fc34224b5272fde40d287068b9f
+Author: Sahana Shetty <sahanashetty0910@gmail.com>
+Date:   Thu Oct 30 00:58:19 2025 -0400
+
+    Added JavaDoc documentation
+
+commit 4df3b8c7770090ba9d53a76535d84b436d3746d8
+Author: Sahana Shetty <sahanashetty0910@gmail.com>
+Date:   Thu Oct 30 00:59:57 2025 -0400
+
+    Added Testability and screenshot of the runner
+
+commit c3ab99f34b9e57c390fe188a4a5224a10c63d65d
+Author: Sahana Shetty <sahanashetty0910@gmail.com>
+Date:   Thu Oct 30 01:00:45 2025 -0400
+
+    Strategy based design pattern filter implemented
+
+commit a640f2a45c48b8c7432af50241c3ab9efcc49e1d
+Author: Heather Conboy <hconboy@cs.umass.edu>
+Date:   Wed Oct 22 14:40:05 2025 -0400
+
+    Update README.md
+    
+    Fixed a typo in the Compile section of the README file.
+
+commit 5095c4adc397e50a68ff6368c2f4820553a2f836
+Author: Heather Conboy <hconboy@cs.umass.edu>
+Date:   Wed Oct 22 09:54:26 2025 -0400
+
+    Modified the Transaction class to be immutable. Modified the ExpenseTrackerModel class to encapsulate the list of transactions.
+
+commit b21da9fb7fd47c25881d7fc014a932365cb1552b
+Author: Mahbuba Tasmin <tasmin153@gmail.com>
+Date:   Sat Sep 2 02:42:57 2023 -0400
+
+    Build file update
+
+commit ccabaffc7ff1b7098979a63fcbadf48bc04915c3
+Author: Mahbuba Tasmin <tasmin153@gmail.com>
+Date:   Tue Aug 29 14:49:22 2023 -0400
+
+    File Update
+
+commit 2574c71001a74c29f01f4a84fa99f450158f2f10
+Author: Mahbuba Tasmin <tasmin153@gmail.com>
+Date:   Wed Aug 9 14:11:14 2023 -0400
+
+    Total Cost and Serial update
+
+commit d29d2c8acb4145ce700e0456ccc334da0cad3dc2
+Author: Mahbuba Tasmin <tasmin153@gmail.com>
+Date:   Wed Aug 9 12:54:46 2023 -0400
+
+    HW2 template files
+
+commit 6a51d8019c39a33d581ce078ae8887a022ee806d
+Author: Mahbuba Tasmin <tasmin153@gmail.com>
+Date:   Tue Aug 8 21:48:41 2023 -0400
+
+    Initial commit
