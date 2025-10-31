@@ -1,0 +1,72 @@
+Export to CSV Feature – Design Plan
+
+1. Goals and Constraints
+- Allow users to export filtered or full transaction history to a CSV file they name.
+- Validate file names to prevent invalid paths, reserved characters, or missing `.csv` extension.
+- Preserve MVC separation, reuse existing model data access, and avoid breaking current features.
+- Provide guided UI cues so users understand requirements and success/failure states.
+
+2. High-Level Workflow
+- User clicks a new `Export…` control in the view, enters a file name, then confirms export.
+- Controller validates input via a dedicated validator; if valid, delegates to an export service.
+- Export service pulls transaction data from the model (respecting active filters) and writes CSV.
+- View shows success feedback or actionable error messages without blocking the UI thread.
+
+3. MVC Responsibilities
+- View (`ExpenseTrackerView`)
+  - Add `Export` button near existing controls for discoverability.
+  - Add modal dialog (`ExportDialog`) with text field for file name, help text, and inline validation cues.
+  - Expose getter methods for dialog events and user input; keep Swing logic localized.
+- Controller (`ExpenseTrackerController`)
+  - Listen for export actions, invoke `ExportRequestValidator`, handle error aggregation.
+  - On success, invoke `TransactionExporter` service and surface the result to the view.
+  - Remain open to additional export formats by handling a generic `ExportRequest`.
+- Model (`ExpenseTrackerModel`)
+  - Provide read-only accessors to current transaction list and filtered views.
+  - No direct file I/O; remains source of truth for transactions.
+
+4. UI Design Considerations
+- Help & Guidance: dialog displays sample file name (`e.g., "march-spending.csv"`) and note about save location.
+- Visibility of Status: non-blocking progress indicator (e.g., `JOptionPane` with "Exporting…") followed by success toast.
+- Error Prevention: disable confirm button until validation passes; real-time feedback for invalid characters or missing extension.
+- Consistency & Standards: reuse existing typography/colors; align dialog buttons with platform conventions (`Export`, `Cancel`).
+
+5. Validation Strategy
+- `ExportRequestValidator` checks:
+  - Non-empty input, trims whitespace.
+  - Allowed characters (letters, digits, hyphen, underscore); reject path separators and reserved names.
+  - Enforce `.csv` suffix; append if user omits it.
+  - Verify target directory is writable using `java.nio.file.Files`.
+- Validation errors returned as structured messages for controller-to-view display (no magic strings; use constants).
+
+6. Export Service Design
+- Introduce `TransactionExporter` interface with `export(ExportRequest request, List<Transaction> data)`.
+- Provide `CsvTransactionExporter` implementation that:
+  - Writes header row via `CsvSchema.HEADER` constant to avoid duplication.
+  - Escapes commas and quotes using `StringEscapeUtils`-like helper (custom utility to avoid new dependencies).
+  - Streams data with `BufferedWriter` and `StandardCharsets.UTF_8`.
+  - Throws `ExportException` with error codes; controller maps to user messages.
+- Future-proofing: additional exporters (PDF, JSON) can implement the same interface without altering controller logic (Open-Closed Principle).
+
+7. Data Structures & Reuse
+- Reuse existing `Transaction` domain model; add `toCsvRow()` helper or dedicated `CsvFormatter`.
+- Maintain filter state in controller/model so export respects current view by default; allow override to export all.
+- Constants file (`ExportConstants`) stores header labels, dialog copy, validation regex.
+
+8. Error Handling & Feedback
+- Controller catches `ExportException`, inspects reason (`FILE_EXISTS`, `IO_ERROR`, `PERMISSION_DENIED`), and passes localized strings to the view.
+- View presents actionable guidance (e.g., "Choose a different file name; file already exists.").
+- Log technical details using existing logging facility or `java.util.logging` to aid debugging without exposing stack traces to users.
+
+9. Testing Plan
+- Unit tests for `ExportRequestValidator` covering valid/invalid filenames, edge cases (empty, reserved chars, missing extension).
+- Unit tests for `CsvTransactionExporter` verifying header, escaping, and handling of I/O failures (mock `Files.newBufferedWriter` or use temp directory).
+- Integration-style tests for controller handling (mock exporter to assert correct calls and error propagation).
+- Manual UI checklist: dialog behavior, keyboard navigation, confirmation messaging, exporting with/without active filters.
+
+10. Implementation Roadmap
+- Phase 1: Define request/exception/constant classes and validator tests.
+- Phase 2: Implement `TransactionExporter` interface and CSV exporter with tests.
+- Phase 3: Update controller to orchestrate export workflow; add dependency injection for exporter.
+- Phase 4: Extend view with dialog, connect listeners, and ensure UI feedback matches guidelines.
+- Phase 5: Perform usability pass and regression testing on add/filter flows.
